@@ -74,6 +74,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="noButtonPressed" destination="BYZ-38-t0r" eventType="touchUpInside" id="aNh-oO-7mf"/>
+                                                </connections>
                                             </button>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="system" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Kym-kY-q8d" userLabel="Yes button">
                                                 <rect key="frame" x="197" y="0.0" width="177" height="60"/>
@@ -88,6 +91,9 @@
                                                         <integer key="value" value="15"/>
                                                     </userDefinedRuntimeAttribute>
                                                 </userDefinedRuntimeAttributes>
+                                                <connections>
+                                                    <action selector="yesButtonPressed" destination="BYZ-38-t0r" eventType="touchUpInside" id="WGr-LR-yd1"/>
+                                                </connections>
                                             </button>
                                         </subviews>
                                         <constraints>
@@ -106,6 +112,11 @@
                             <constraint firstItem="Jz6-Or-W1z" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="uhG-Eu-Q1e"/>
                         </constraints>
                     </view>
+                    <connections>
+                        <outlet property="indexLabel" destination="fgn-ys-Srj" id="eJk-Nn-Sz0"/>
+                        <outlet property="previewImage" destination="sc4-Mp-n8g" id="6AL-yG-d3S"/>
+                        <outlet property="questionTextLabel" destination="y7V-jd-99e" id="brA-YN-u8Y"/>
+                    </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
