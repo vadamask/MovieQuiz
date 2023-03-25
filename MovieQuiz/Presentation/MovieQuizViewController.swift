@@ -48,6 +48,8 @@ final class MovieQuizViewController: UIViewController {
     @IBOutlet private var indexLabel: UILabel!
     @IBOutlet private var previewImage: UIImageView!
     @IBOutlet private var questionTextLabel: UILabel!
+    @IBOutlet private var yesButton: UIButton!
+    @IBOutlet private var noButton: UIButton!
     
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
@@ -56,9 +58,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let firstQuestion = questions[currentQuestionIndex]
-        let viewModel = convert(model: firstQuestion)
-        show(quiz: viewModel)
+        showCurrentQuestion()
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
@@ -92,6 +92,7 @@ final class MovieQuizViewController: UIViewController {
         
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
             self.showNextQuestionOrResults()
+            self.enableButtons()
         }
     }
     
@@ -109,10 +110,14 @@ final class MovieQuizViewController: UIViewController {
             
         } else {
             currentQuestionIndex += 1
-            let nextQuestion = questions[currentQuestionIndex]
-            let viewModel = convert(model: nextQuestion)
-            show(quiz: viewModel)
+            showCurrentQuestion()
         }
+    }
+    
+    private func showCurrentQuestion() {
+        let currentQuestion = questions[currentQuestionIndex]
+        let viewModel = convert(model: currentQuestion)
+        show(quiz: viewModel)
     }
     
     private func show(quiz result: QuizResultsViewModel) {
@@ -137,8 +142,19 @@ final class MovieQuizViewController: UIViewController {
         present(alertController, animated: true, completion: nil)
     }
     
+    private func blockButtons() {
+        yesButton.isEnabled = false
+        noButton.isEnabled = false
+    }
+    
+    private func enableButtons() {
+        yesButton.isEnabled = true
+        noButton.isEnabled = true
+    }
+    
     
     @IBAction private func yesButtonPressed() {
+        blockButtons()
         let currentAnswer = questions[currentQuestionIndex]
         let givenAnswer = true
         showAnswerResult(isCorrect: currentAnswer.correctAnswer == givenAnswer)
@@ -146,6 +162,7 @@ final class MovieQuizViewController: UIViewController {
     }
     
     @IBAction private func noButtonPressed() {
+        blockButtons()
         let currentAnswer = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: currentAnswer.correctAnswer == givenAnswer)
