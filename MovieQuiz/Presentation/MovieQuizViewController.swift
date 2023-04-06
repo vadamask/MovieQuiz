@@ -80,6 +80,8 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showAnswerResult(isCorrect: Bool) {
+        blockButtons()
+        
         previewImage.layer.masksToBounds = true
         previewImage.layer.borderWidth = 8
         
@@ -90,7 +92,9 @@ final class MovieQuizViewController: UIViewController {
             previewImage.layer.borderColor = UIColor.ypRed.cgColor
         }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1) {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
+           
+            guard let self = self else { return }
             self.showNextQuestionOrResults()
             self.enableButtons()
         }
@@ -124,11 +128,14 @@ final class MovieQuizViewController: UIViewController {
         let alertController = UIAlertController(
             title: result.title,
             message: result.text,
-            preferredStyle: .alert)
+            preferredStyle: .alert
+        )
         
         let action = UIAlertAction(
             title: result.buttonText,
-            style: .default) { _ in
+            style: .default) { [weak self] _ in
+                
+                guard let self = self else { return }
                 self.correctAnswers = 0
                 self.currentQuestionIndex = 0
                 
@@ -154,7 +161,6 @@ final class MovieQuizViewController: UIViewController {
     
     
     @IBAction private func yesButtonPressed() {
-        blockButtons()
         let currentAnswer = questions[currentQuestionIndex]
         let givenAnswer = true
         showAnswerResult(isCorrect: currentAnswer.correctAnswer == givenAnswer)
@@ -162,7 +168,6 @@ final class MovieQuizViewController: UIViewController {
     }
     
     @IBAction private func noButtonPressed() {
-        blockButtons()
         let currentAnswer = questions[currentQuestionIndex]
         let givenAnswer = false
         showAnswerResult(isCorrect: currentAnswer.correctAnswer == givenAnswer)
