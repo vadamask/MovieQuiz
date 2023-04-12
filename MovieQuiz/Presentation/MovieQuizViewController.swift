@@ -11,6 +11,7 @@ final class MovieQuizViewController: UIViewController {
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenterProtocol? = AlertPresenter()
+    private var statisticService: StatisticService? = StatisticServiceImplementation()
     
     private let questionsAmount: Int = 10
     private var currentQuestionIndex = 0
@@ -24,8 +25,6 @@ final class MovieQuizViewController: UIViewController {
         questionFactory?.requestNextQuestion()
         
     }
-    
-    //MARK: - Private Methods
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         
@@ -78,9 +77,21 @@ final class MovieQuizViewController: UIViewController {
     
     private func showResult() {
         
+        guard let statistic = statisticService else {
+            print("Сервис статистики не доступен")
+            return
+        }
+        
+        statistic.store(correct: correctAnswers, total: questionsAmount)
+        
         let resultModel = AlertModel(
             title: "Этот раунд окончен!",
-            message: "Ваш результат: \(correctAnswers)/\(questionsAmount)",
+            message: """
+                        Ваш результат: \(correctAnswers)/\(questionsAmount)
+                        Количество сыгранных квизов: \(statistic.gamesCount)
+                        Рекорд: \(statistic.bestGame.correct)/\(statistic.bestGame.total) (\(statistic.bestGame.date.dateTimeString))
+                        Cредняя точность: \(String(format: "%.2f", statistic.totalAccuracy))%
+                     """,
             buttonText: "Сыграть еще раз",
             completion: { [weak self] in
                 guard let self = self else { return }
@@ -101,8 +112,6 @@ final class MovieQuizViewController: UIViewController {
         yesButton.isEnabled = true
         noButton.isEnabled = true
     }
-    
-    //MARK: - Private IBActions
     
     @IBAction private func yesButtonPressed() {
         guard let currentQuestion = currentQuestion else { return }
