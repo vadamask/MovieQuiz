@@ -27,7 +27,7 @@ final class StatisticServiceImplementation: StatisticService {
     var totalAccuracy: Double {
         let correct = userDefaults.integer(forKey: Keys.correct.rawValue)
         let total = userDefaults.integer(forKey: Keys.total.rawValue)
-        return (Double(correct) / Double(total) * 100).rounded()
+        return Double(correct) / Double(total) * 100
     }
     
     var gamesCount: Int {
@@ -71,10 +71,10 @@ final class StatisticServiceImplementation: StatisticService {
     private func updateData(with correct: Int, and total: Int) {
         let oldCorrect = userDefaults.integer(forKey: Keys.correct.rawValue)
         let oldTotal = userDefaults.integer(forKey: Keys.total.rawValue)
-        let oldGamesCount = userDefaults.integer(forKey: Keys.gamesCount.rawValue)
         userDefaults.set(correct + oldCorrect, forKey: Keys.correct.rawValue)
         userDefaults.set(total + oldTotal, forKey: Keys.total.rawValue)
-        userDefaults.set(oldGamesCount + 1, forKey: Keys.gamesCount.rawValue)
+        let oldGamesCount = gamesCount
+        gamesCount = oldGamesCount + 1
     }
 }
 

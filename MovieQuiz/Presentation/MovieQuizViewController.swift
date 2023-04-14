@@ -2,11 +2,11 @@ import UIKit
 
 final class MovieQuizViewController: UIViewController {
     
-    @IBOutlet private var indexLabel: UILabel!
-    @IBOutlet private var previewImage: UIImageView!
-    @IBOutlet private var questionTextLabel: UILabel!
-    @IBOutlet private var yesButton: UIButton!
-    @IBOutlet private var noButton: UIButton!
+    @IBOutlet private weak var indexLabel: UILabel!
+    @IBOutlet private weak var previewImage: UIImageView!
+    @IBOutlet private weak var questionTextLabel: UILabel!
+    @IBOutlet private weak var yesButton: UIButton!
+    @IBOutlet private weak var noButton: UIButton!
     
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
@@ -29,7 +29,7 @@ final class MovieQuizViewController: UIViewController {
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
         
         let questionStep = QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(),
+            image: UIImage(named: model.image) ?? UIImage(named: "Failure")!,
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)"
         )
@@ -113,17 +113,17 @@ final class MovieQuizViewController: UIViewController {
         noButton.isEnabled = true
     }
     
-    @IBAction private func yesButtonPressed() {
+    private func answerGived(_ givenAnswer: Bool) {
         guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = true
         showAnswerResult(isCorrect: currentQuestion.correctAnswer == givenAnswer)
-        
+    }
+    
+    @IBAction private func yesButtonPressed() {
+        answerGived(true)
     }
     
     @IBAction private func noButtonPressed() {
-        guard let currentQuestion = currentQuestion else { return }
-        let givenAnswer = false
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == givenAnswer)
+        answerGived(false)
     }
 }
 
