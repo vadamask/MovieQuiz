@@ -8,11 +8,9 @@
 import UIKit
 
 protocol StatisticService {
-    
     var totalAccuracy: Double { get }
     var gamesCount: Int { get }
     var bestGame: GameRecord { get }
-    
     func store(correct count: Int, total amount: Int)
 }
 
@@ -40,7 +38,6 @@ final class StatisticServiceImplementation: StatisticService {
     }
     
     var bestGame: GameRecord {
-        
         get {
             guard let data = userDefaults.data(forKey: Keys.bestGame.rawValue),
                   let record = try? JSONDecoder().decode(GameRecord.self, from: data) else {
@@ -58,7 +55,6 @@ final class StatisticServiceImplementation: StatisticService {
     }
     
     func store(correct count: Int, total amount: Int) {
-        
         updateData(with: count, and: amount)
         
         let currentGame = GameRecord(correct: count, total: amount, date: Date())
@@ -79,7 +75,6 @@ final class StatisticServiceImplementation: StatisticService {
 }
 
 struct GameRecord: Codable, Comparable {
-    
     let correct: Int
     let total: Int
     let date: Date

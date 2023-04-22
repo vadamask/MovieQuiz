@@ -10,7 +10,6 @@ import UIKit
 class AlertPresenter: AlertPresenterProtocol {
     
     func showAlert(quiz result: AlertModel, on vc: UIViewController) {
-        
         let alertController = UIAlertController(
             title: result.title,
             message: result.message,

@@ -11,8 +11,8 @@ final class MovieQuizViewController: UIViewController {
     
     private var questionFactory: QuestionFactoryProtocol?
     private var currentQuestion: QuizQuestion?
-    private var alertPresenter: AlertPresenterProtocol? = AlertPresenter()
-    private var statisticService: StatisticService? = StatisticServiceImplementation()
+    private var alertPresenter: AlertPresenterProtocol?
+    private var statisticService: StatisticService?
     
     private let questionsAmount: Int = 10
     private var currentQuestionIndex = 0
@@ -22,8 +22,12 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        questionFactory = QuestionFactory(delegate: self)
-        questionFactory?.requestNextQuestion()
+        questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
+        alertPresenter = AlertPresenter()
+        statisticService = StatisticServiceImplementation()
+        
+        showLoadingIndicator()
+        questionFactory?.loadData()
         
     }
     
@@ -45,20 +49,18 @@ final class MovieQuizViewController: UIViewController {
             message: message,
             buttonText: "Попробовать еще раз",
             completion: { [weak self] in
-                guard let self = self else {return}
+                guard let self = self else { return }
                 self.correctAnswers = 0
                 self.currentQuestionIndex = 0
                 self.questionFactory?.requestNextQuestion()
-                
             }
         )
         alertPresenter?.showAlert(quiz: alert, on: self)
     }
     
     private func convert(model: QuizQuestion) -> QuizStepViewModel {
-        
         let questionStep = QuizStepViewModel(
-            image: UIImage(named: model.image) ?? UIImage(named: "Failure")!,
+            image: UIImage(data: model.image) ?? UIImage(named: "Failure")!,
             question: model.text,
             questionNumber: "\(currentQuestionIndex + 1)/\(questionsAmount)"
         )
@@ -66,7 +68,6 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func show(quiz step: QuizStepViewModel) {
-        
         indexLabel.text = step.questionNumber
         previewImage.image = step.image
         previewImage.layer.cornerRadius = 20
@@ -74,7 +75,6 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showAnswerResult(isCorrect: Bool) {
-        
         blockButtons()
         previewImage.layer.masksToBounds = true
         previewImage.layer.borderWidth = 8
@@ -95,7 +95,6 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showNextQuestionOrResults() {
-        
         if currentQuestionIndex == questionsAmount - 1 {
             showResult()
         } else {
@@ -105,7 +104,6 @@ final class MovieQuizViewController: UIViewController {
     }
     
     private func showResult() {
-        
         guard let statistic = statisticService else {
             print("Сервис статистики не доступен")
             return
@@ -169,13 +167,11 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
     
     
     func didRecieveNextQuestion(question: QuizQuestion?) {
-        
         guard let question = question else { return }
         currentQuestion = question
         let viewModel = convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
-            
             guard let self = self else { return }
             self.previewImage.layer.borderColor = UIColor.clear.cgColor
             self.show(quiz: viewModel)
