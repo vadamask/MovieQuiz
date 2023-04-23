@@ -7,7 +7,7 @@
 
 import UIKit
 
-class QuestionFactory: QuestionFactoryProtocol {
+final class QuestionFactory: QuestionFactoryProtocol {
   
     private let moviesLoader: MoviesLoading
     private weak var delegate: QuestionFactoryDelegate?
@@ -52,7 +52,10 @@ class QuestionFactory: QuestionFactoryProtocol {
                 imageData = try Data(contentsOf: movie.resizedImageURL) // не использовать так! пока для удобства
             }
             catch {
-                print("Failed to load image")
+                DispatchQueue.main.async {
+                    self.delegate?.didFailToLoadData(with: error)
+                    return
+                }
             }
             
             let rating = Float(movie.rating) ?? 0
