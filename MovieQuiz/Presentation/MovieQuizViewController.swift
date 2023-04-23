@@ -156,6 +156,20 @@ final class MovieQuizViewController: UIViewController {
 
 extension MovieQuizViewController: QuestionFactoryDelegate {
     
+    func didRecieveErrorMessage(_ message: String) {
+        let alert = AlertModel(
+            title: "Ошибка",
+            message: message,
+            buttonText: "Попробовать еще раз",
+            completion: { [weak self] in
+                guard let self = self else { return }
+                self.showLoadingIndicator()
+                self.questionFactory?.loadData()
+            }
+        )
+        alertPresenter?.showAlert(quiz: alert, on: self)
+    }
+    
     func didLoadDataFromServer() {
         hideLoadingIndicator()
         questionFactory?.requestNextQuestion()
