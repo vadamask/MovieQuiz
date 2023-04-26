@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21507" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="21701" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES" initialViewController="BYZ-38-t0r">
     <device id="retina6_1" orientation="portrait" appearance="dark"/>
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21505"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="21678"/>
         <capability name="Named colors" minToolsVersion="9.0"/>
         <capability name="Safe area layout guides" minToolsVersion="9.0"/>
         <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
@@ -31,7 +31,7 @@
                                     <stackView opaque="NO" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="vLp-NH-umB">
                                         <rect key="frame" x="0.0" y="0.0" width="374" height="23.5"/>
                                         <subviews>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Вопрос:" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lj-hs-ftX" userLabel="Question Title Label">
+                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Вопрос :" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="3Lj-hs-ftX" userLabel="Question Title Label">
                                                 <rect key="frame" x="0.0" y="0.0" width="338" height="23.5"/>
                                                 <fontDescription key="fontDescription" name="YSDisplay-Medium" family="YS Display" pointSize="20"/>
                                                 <color key="textColor" name="YP White"/>
@@ -102,17 +102,23 @@
                                     </stackView>
                                 </subviews>
                             </stackView>
+                            <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="O8b-NS-ATc">
+                                <rect key="frame" x="197" y="438" width="20" height="20"/>
+                            </activityIndicatorView>
                         </subviews>
                         <viewLayoutGuide key="safeArea" id="6Tk-OE-BBY"/>
                         <color key="backgroundColor" name="YP Black"/>
                         <constraints>
                             <constraint firstItem="Jz6-Or-W1z" firstAttribute="top" secondItem="6Tk-OE-BBY" secondAttribute="top" constant="10" id="4Pk-By-Q5E"/>
+                            <constraint firstItem="O8b-NS-ATc" firstAttribute="centerY" secondItem="8bC-Xf-vdC" secondAttribute="centerY" id="Dy9-ZF-naF"/>
                             <constraint firstItem="Jz6-Or-W1z" firstAttribute="leading" secondItem="6Tk-OE-BBY" secondAttribute="leading" constant="20" id="KbM-XQ-vjX"/>
                             <constraint firstItem="Jz6-Or-W1z" firstAttribute="trailing" secondItem="6Tk-OE-BBY" secondAttribute="trailing" constant="-20" id="Kqc-0b-QTw"/>
                             <constraint firstItem="Jz6-Or-W1z" firstAttribute="bottom" secondItem="6Tk-OE-BBY" secondAttribute="bottom" id="uhG-Eu-Q1e"/>
+                            <constraint firstItem="O8b-NS-ATc" firstAttribute="centerX" secondItem="8bC-Xf-vdC" secondAttribute="centerX" id="uiI-Wz-viw"/>
                         </constraints>
                     </view>
                     <connections>
+                        <outlet property="activityIndicator" destination="O8b-NS-ATc" id="T9F-77-D0m"/>
                         <outlet property="indexLabel" destination="fgn-ys-Srj" id="eJk-Nn-Sz0"/>
                         <outlet property="noButton" destination="bIm-Dr-XyZ" id="u2g-J5-UFu"/>
                         <outlet property="previewImage" destination="sc4-Mp-n8g" id="6AL-yG-d3S"/>
