@@ -18,6 +18,9 @@ final class MovieQuizViewController: UIViewController {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     
+    override var preferredStatusBarStyle: UIStatusBarStyle {
+        .lightContent
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -71,10 +74,14 @@ final class MovieQuizViewController: UIViewController {
         previewImage.layer.masksToBounds = true
         previewImage.layer.borderWidth = 8
         
+        let feedbackGenertor = UINotificationFeedbackGenerator()
+        
         if isCorrect {
+            feedbackGenertor.notificationOccurred(.success)
             previewImage.layer.borderColor = UIColor.ypGreen.cgColor
             correctAnswers += 1
         } else {
+            feedbackGenertor.notificationOccurred(.error)
             previewImage.layer.borderColor = UIColor.ypRed.cgColor
         }
         
