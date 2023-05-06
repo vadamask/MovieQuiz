@@ -11,7 +11,6 @@ final class MovieQuizViewController: UIViewController {
     
     private let presenter = MovieQuizPresenter()
     private var questionFactory: QuestionFactoryProtocol?
-    private var currentQuestion: QuizQuestion?
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticService?
     
@@ -24,6 +23,7 @@ final class MovieQuizViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        presenter.viewController = self
         questionFactory = QuestionFactory(moviesLoader: MoviesLoader(), delegate: self)
         alertPresenter = AlertPresenter()
         statisticService = StatisticServiceImplementation()
@@ -32,8 +32,6 @@ final class MovieQuizViewController: UIViewController {
         questionFactory?.loadData()
         activityIndicator.startAnimating()
     }
-    
-    
     
     private func showNetworkError(message: String) {
         activityIndicator.stopAnimating()
@@ -59,7 +57,7 @@ final class MovieQuizViewController: UIViewController {
         questionTextLabel.text = step.question
     }
     
-    private func showAnswerResult(isCorrect: Bool) {
+    func showAnswerResult(isCorrect: Bool) {
         blockButtons()
         previewImage.layer.masksToBounds = true
         previewImage.layer.borderWidth = 8
@@ -128,19 +126,6 @@ final class MovieQuizViewController: UIViewController {
         yesButton.isEnabled = true
         noButton.isEnabled = true
     }
-    
-    private func answerGived(_ givenAnswer: Bool) {
-        guard let currentQuestion = currentQuestion else { return }
-        showAnswerResult(isCorrect: currentQuestion.correctAnswer == givenAnswer)
-    }
-    
-    @IBAction private func yesButtonPressed() {
-        answerGived(true)
-    }
-    
-    @IBAction private func noButtonPressed() {
-        answerGived(false)
-    }
 }
 
 extension MovieQuizViewController: QuestionFactoryDelegate {
@@ -171,7 +156,7 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
     
     func didRecieveNextQuestion(question: QuizQuestion?) {
         guard let question = question else { return }
-        currentQuestion = question
+        presenter.currentQuestion = question
         let viewModel = presenter.convert(model: question)
         
         DispatchQueue.main.async { [weak self] in
@@ -179,6 +164,14 @@ extension MovieQuizViewController: QuestionFactoryDelegate {
             self.previewImage.layer.borderColor = UIColor.clear.cgColor
             self.show(quiz: viewModel)
         }
+    }
+    
+    @IBAction private func yesButtonPressed() {
+        presenter.yesButtonPressed()
+    }
+    
+    @IBAction private func noButtonPressed() {
+        presenter.noButtonPressed()
     }
 }
 
