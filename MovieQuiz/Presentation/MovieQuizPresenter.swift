@@ -9,7 +9,7 @@ import UIKit
 
 final class MovieQuizPresenter {
     
-    private weak var viewController: MovieQuizViewController?
+    private weak var viewController: MovieQuizViewControllerProtocol?
     private var questionFactory: QuestionFactoryProtocol?
     private var alertPresenter: AlertPresenterProtocol?
     private var statisticService: StatisticService?
@@ -18,7 +18,7 @@ final class MovieQuizPresenter {
     private var currentQuestionIndex = 0
     private var correctAnswers = 0
     
-    init(viewController: MovieQuizViewController) {
+    init(viewController: MovieQuizViewControllerProtocol) {
         self.viewController = viewController
         
         alertPresenter = AlertPresenter()
@@ -29,7 +29,7 @@ final class MovieQuizPresenter {
         viewController.showActivityIndicator()
     }
     
-    private func convert(model: QuizQuestion) -> QuizStepViewModel {
+    func convert(model: QuizQuestion) -> QuizStepViewModel {
         let questionStep = QuizStepViewModel(
             image: UIImage(data: model.image) ?? UIImage(),
             question: model.text,
@@ -72,25 +72,26 @@ final class MovieQuizPresenter {
     
         DispatchQueue.main.asyncAfter(deadline: .now() + 1) { [weak self] in
             guard let self = self else { return }
-            proceedToNextQuestionOrResults()
+            self.proceedToNextQuestionOrResults()
             self.viewController?.enableUserInteraction()
         }
     }
     
+    private func proceedToNextQuestionOrResults() {
+        if isLastQuestion() {
+            showResult()
+        } else {
+            switchToNextQuestion()
+            questionFactory?.requestNextQuestion()
+        }
+    }
+    
     private func showResult() {
-        guard let statistic = statisticService,
-              let viewController = viewController else { return }
-        
-        statistic.store(correct: correctAnswers, total: questionsAmount)
+        guard let viewController = viewController as? MovieQuizViewController else { return }
         
         let resultModel = AlertModel(
             title: "Этот раунд окончен!",
-            message: """
-                        Ваш результат: \(correctAnswers)/\(questionsAmount)
-                        Количество сыгранных квизов: \(statistic.gamesCount)
-                        Рекорд: \(statistic.bestGame.correct)/\(statistic.bestGame.total) (\(statistic.bestGame.date.dateTimeString))
-                        Cредняя точность: \(String(format: "%.2f", statistic.totalAccuracy))%
-                     """,
+            message: resultMessage(),
             buttonText: "Сыграть еще раз",
             completion: { [weak self] in
                 guard let self = self else { return }
@@ -100,8 +101,22 @@ final class MovieQuizPresenter {
         alertPresenter?.showAlert(quiz: resultModel, on: viewController)
     }
     
+    func resultMessage() -> String {
+        guard let statistic = statisticService else { return "" }
+              
+        statistic.store(correct: correctAnswers, total: questionsAmount)
+        
+        let result = "Ваш результат: \(correctAnswers)/\(questionsAmount)"
+        let countGames = "Количество сыгранных квизов: \(statistic.gamesCount)"
+        let record = "Рекорд: \(statistic.bestGame.correct)/\(statistic.bestGame.total) (\(statistic.bestGame.date.dateTimeString))"
+        let totalAccuracy = "Cредняя точность: \(String(format: "%.2f", statistic.totalAccuracy))%"
+        
+        let resultMessage = [result, countGames, record, totalAccuracy].joined(separator: "\n")
+        return resultMessage
+    }
+    
     private func showNetworkError(message: String) {
-        guard let viewController = viewController else { return }
+        guard let viewController = viewController as? MovieQuizViewController else { return }
         
         viewController.hideActivityIndicator()
         
@@ -124,15 +139,6 @@ final class MovieQuizPresenter {
     func noButtonPressed() {
         answerGived(false)
     }
-    
-    func proceedToNextQuestionOrResults() {
-        if isLastQuestion() {
-            showResult()
-        } else {
-            switchToNextQuestion()
-            questionFactory?.requestNextQuestion()
-        }
-    }
 }
 
 extension MovieQuizPresenter: QuestionFactoryDelegate {
@@ -147,7 +153,7 @@ extension MovieQuizPresenter: QuestionFactoryDelegate {
     }
     
     func didRecieveErrorMessage(_ message: String) {
-        guard let viewController = viewController else { return }
+        guard let viewController = viewController as? MovieQuizViewController else { return }
         
         let alert = AlertModel(
             title: "Ошибка",

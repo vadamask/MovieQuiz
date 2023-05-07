@@ -61,7 +61,7 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertEqual(indexLabel.label, "2/10")
     }
     
-    func testAlertPresent() throws {
+    func testResultAlertPresent() throws {
         sleep(2)
         
         for _ in 1...10 {
@@ -76,7 +76,7 @@ final class MovieQuizUITests: XCTestCase {
         XCTAssertEqual(alert.buttons.firstMatch.label, "Сыграть еще раз")
     }
     
-    func testAlertDismiss() throws {
+    func testResultAlertDismiss() throws {
         sleep(2)
         
         for _ in 1...10 {
