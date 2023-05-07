@@ -44,7 +44,7 @@ final class MovieQuizPresenter {
         questionFactory?.requestNextQuestion()
     }
     
-    private func isLastQuestion() -> Bool {
+    private var isLastQuestion: Bool {
         currentQuestionIndex == questionsAmount - 1
     }
     
@@ -78,7 +78,7 @@ final class MovieQuizPresenter {
     }
     
     private func proceedToNextQuestionOrResults() {
-        if isLastQuestion() {
+        if isLastQuestion {
             showResult()
         } else {
             switchToNextQuestion()
@@ -91,7 +91,7 @@ final class MovieQuizPresenter {
         
         let resultModel = AlertModel(
             title: "Этот раунд окончен!",
-            message: resultMessage(),
+            message: getResultMessage(),
             buttonText: "Сыграть еще раз",
             completion: { [weak self] in
                 guard let self = self else { return }
@@ -101,7 +101,7 @@ final class MovieQuizPresenter {
         alertPresenter?.showAlert(quiz: resultModel, on: viewController)
     }
     
-    func resultMessage() -> String {
+    private func getResultMessage() -> String {
         guard let statistic = statisticService else { return "" }
               
         statistic.store(correct: correctAnswers, total: questionsAmount)
