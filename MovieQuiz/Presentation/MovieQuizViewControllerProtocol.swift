@@ -8,11 +8,12 @@
 import Foundation
 
 protocol MovieQuizViewControllerProtocol: AnyObject {
-    func show(quiz step: QuizStepViewModel)
-    func showActivityIndicator()
-    func hideActivityIndicator()
-    func highlightImageBorder(isCorrect: Bool)
-    func clearImageBorder()
-    func enableUserInteraction()
-    func disableUserInteraction()
+  func show(quiz step: QuizStepViewModel)
+  func showActivityIndicator()
+  func hideActivityIndicator()
+  func highlightImageBorder(isCorrect: Bool)
+  func clearImageBorder()
+  func enableUserInteraction()
+  func disableUserInteraction()
+  func enableFeedbackGenerator(if isCorrect: Bool)
 }

@@ -9,57 +9,57 @@ import XCTest
 @testable import MovieQuiz
 
 final class MoviesLoaderTests: XCTestCase {
-    func testSuccessLoading() throws {
-        // Given
-        let stubNetworkClient = StubNetworkClient(emulateError: false)
-        let loader = MoviesLoader(networkClient: stubNetworkClient)
-        
-        // When
-        let expectation = expectation(description: "Loading expectation")
-        
-        loader.loadMovies { result in
-            // Then
-            switch result {
-            case .success(let movies):
-                XCTAssertEqual(movies.items.count, 2)
-                expectation.fulfill()
-            case .failure:
-                XCTFail("Unexpected failure")
-            }
-        }
-        waitForExpectations(timeout: 1)
-    }
+  func testSuccessLoading() throws {
+    // Given
+    let stubNetworkClient = StubNetworkClient(emulateError: false)
+    let loader = MoviesLoader(networkClient: stubNetworkClient)
     
-    func testFailureLoading() throws {
-        // Given
-        let stubNetworkClient = StubNetworkClient(emulateError: true)
-        let loader = MoviesLoader(networkClient: stubNetworkClient)
-        
-        // When
-        let expectation = expectation(description: "Loading expectation")
-        
-        loader.loadMovies { result in
-            // Then
-            switch result {
-            case .success:
-                XCTFail("Unexpected failure")
-            case .failure(let error):
-                XCTAssertNotNil(error)
-                expectation.fulfill()
-            }
-        }
-        waitForExpectations(timeout: 1)
+    // When
+    let expectation = expectation(description: "Loading expectation")
+    
+    loader.loadMovies { result in
+      // Then
+      switch result {
+      case .success(let movies):
+        XCTAssertEqual(movies.items.count, 2)
+        expectation.fulfill()
+      case .failure:
+        XCTFail("Unexpected failure")
+      }
     }
+    waitForExpectations(timeout: 1)
+  }
+  
+  func testFailureLoading() throws {
+    // Given
+    let stubNetworkClient = StubNetworkClient(emulateError: true)
+    let loader = MoviesLoader(networkClient: stubNetworkClient)
+    
+    // When
+    let expectation = expectation(description: "Loading expectation")
+    
+    loader.loadMovies { result in
+      // Then
+      switch result {
+      case .success:
+        XCTFail("Unexpected failure")
+      case .failure(let error):
+        XCTAssertNotNil(error)
+        expectation.fulfill()
+      }
+    }
+    waitForExpectations(timeout: 1)
+  }
 }
 
 struct StubNetworkClient: NetworkRouting {
-    enum TestError: Error {
-        case test
-    }
-    
-    let emulateError: Bool
-    
-    var expectedResponse: Data {
+  enum TestError: Error {
+    case test
+  }
+  
+  let emulateError: Bool
+  
+  var expectedResponse: Data {
                 """
                 {
                    "errorMessage" : "",
@@ -91,13 +91,13 @@ struct StubNetworkClient: NetworkRouting {
                     ]
                   }
                 """.data(using: .utf8) ?? Data()
+  }
+  
+  func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
+    if emulateError {
+      handler(.failure(TestError.test))
+    } else {
+      handler(.success(expectedResponse))
     }
-    
-    func fetch(url: URL, handler: @escaping (Result<Data, Error>) -> Void) {
-        if emulateError {
-            handler(.failure(TestError.test))
-        } else {
-            handler(.success(expectedResponse))
-        }
-    }
+  }
 }
