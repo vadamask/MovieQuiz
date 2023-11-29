@@ -14,7 +14,7 @@ final class MovieQuizPresenter {
   private var alertPresenter: AlertPresenterProtocol?
   private var statisticService: StatisticService?
   private var currentQuestion: QuizQuestion?
-  private let questionsAmount: Int = 10
+  private let questionsAmount = 10
   private var currentQuestionIndex = 0
   private var correctAnswers = 0
   

@@ -36,7 +36,6 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
       }
     }
-    
   }
   
   func requestNextQuestion() {
@@ -69,7 +68,11 @@ final class QuestionFactory: QuestionFactoryProtocol {
         }
       }
       
-      let question = QuizQuestion(image: imageData, text: randomQuestion.question, correctAnswer: correctAnswer)
+      let question = QuizQuestion(
+        image: imageData,
+        text: randomQuestion.question,
+        correctAnswer: correctAnswer
+      )
       
       DispatchQueue.main.async { [weak self] in
         guard let self = self else { return }
